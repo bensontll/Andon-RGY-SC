@@ -19,93 +19,261 @@ namespace Andon
             Graphics gMap = Graphics.FromImage((Image)btMap);
             PbBG.BackColor = Color.Black;
             PbBG.Image = (Image)btMap;
-
             //PbScale.Image = btLine;
+        }  
+
+        public void DrawBorder(Label LabelText, String[] Border)
+        {
+            Color PenColor = EditLED.HEXtoC(Border[4]);
+            Pen p = new Pen(PenColor, 1);
+
+            Point plt = new Point(0, 0);
+            Point prt = new Point(LabelText.Width - 1, 0);
+            Point plb = new Point(0, LabelText.Height - 1);
+            Point prb = new Point(LabelText.Width - 1, LabelText.Height - 1);
+            Bitmap bt = new Bitmap(LabelText.Width, LabelText.Height);
+            Graphics g = Graphics.FromImage(bt);
+            if (Border[0] == "1")
+            {
+                g.DrawLine(p, plt, plb);
+            }
+            if (Border[1] == "1")
+            {
+                g.DrawLine(p, plt, prt);
+            }
+            if (Border[2] == "1")
+            {
+                g.DrawLine(p, prt, prb);
+            }
+            if (Border[3] == "1")
+            {
+                g.DrawLine(p, plb, prb);
+            }
+            LabelText.Image = bt;
+
         }
 
-        public void DrawText(PictureBox PbText, PictureBox Parent, String Content, int TextSize, int TextNo, int Left, int Top, Color ColorText)
+        public void DrawPicBorder(PictureBox Pic, String[] Border)
         {
-            PbText.Name = Content;
-            string textC = "R";
-            switch (ColorText.Name)
+            Color PenColor = EditLED.HEXtoC(Border[4]);
+            Pen p = new Pen(PenColor, 1);
+
+            Point plt = new Point(0, 0);
+            Point prt = new Point(Pic.Width - 1, 0);
+            Point plb = new Point(0, Pic.Height - 1);
+            Point prb = new Point(Pic.Width - 1, Pic.Height - 1);
+
+            Bitmap bt = new Bitmap(Application.StartupPath + Pic.Text);
+            Pic.Image = bt;
+            bt = new Bitmap(Pic.Image);
+            Graphics g = Graphics.FromImage(bt);
+            if (Border[0] == "1")
             {
-                case "Red":
-                    textC = "R";
-                    break;
-                case "Green":
-                    textC = "G";
-                    break;
-                case "Yellow":
-                    textC = "Y";
-                    break;
+                g.DrawLine(p, plt, plb);
+            }
+            if (Border[1] == "1")
+            {
+                g.DrawLine(p, plt, prt);
+            }
+            if (Border[2] == "1")
+            {
+                g.DrawLine(p, prt, prb);
+            }
+            if (Border[3] == "1")
+            {
+                g.DrawLine(p, plb, prb);
+            }
+            Pic.Image = bt;
+        }
+
+        public void Frame(Label LabelText, int CBool)
+        {
+            Color frameColor = Color.Gray;
+            String strBack = LabelText.Tag.ToString().Split('#')[8];
+            Color backColor = EditLED.HEXtoC(strBack);
+            Pen pf = new Pen(frameColor, 1);
+            pf.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+            Pen pc = new Pen(backColor, 1);
+
+            Rectangle rect = new Rectangle(0, 0, LabelText.Width - 1, LabelText.Height - 1);
+
+            //Bitmap bt = new Bitmap(LabelText.Image);
+            Graphics g = Graphics.FromImage(LabelText.Image);
+            if(CBool == 0)
+            {
+                String[] border = LabelText.Tag.ToString().Split('#');
+                g.DrawRectangle(pc, rect);
+                //LabelText.Image = bt;                
+                DrawBorder(LabelText, border);
+                LabelText.Visible = false;
+                LabelText.Visible = true;
+            }
+            else if(CBool == 1)
+            {
+                g.DrawRectangle(pf, rect);
+                //LabelText.Image = bt;
+                LabelText.Visible = false;
+                LabelText.Visible = true;
+            }        
+            
+        }
+
+        public void PicFrame (PictureBox Pb, int CBool)
+        {
+            Color frameColor = Color.Gray;
+            String[] Border = Pb.Tag.ToString().Split('#');
+
+            Pen pf = new Pen(frameColor, 1);
+            pf.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+
+            Rectangle rect = new Rectangle(0, 0, Pb.Width - 1, Pb.Height - 1);
+
+            if (CBool == 0)
+            {
+                Pb.Image = Image.FromFile(Application.StartupPath + Pb.Text);
+                DrawPicBorder(Pb, Border);
+            }
+            else if (CBool == 1)
+            {
+                Bitmap bt = new Bitmap(Pb.Image);  
+                Graphics g = Graphics.FromImage(bt);
+                g.DrawRectangle(pf, rect);
+                Pb.Image = bt;
+            }
+        }
+
+        public Bitmap BlackBorder(PictureBox pb)
+        {
+            Bitmap bt = new Bitmap(pb.Width, pb.Height);
+            Point plt = new Point(0, 0);
+            Point prt = new Point(pb.Width - 1, 0);
+            Point plb = new Point(0, pb.Height - 1);
+            Point prb = new Point(pb.Width - 1, pb.Height - 1);
+            Graphics g = Graphics.FromImage(bt);
+            g.FillRectangle(Brushes.Black, 0, 0, bt.Width, bt.Height);
+            String[] Border = pb.Tag.ToString().Split('#');
+            Color PenColor = EditLED.HEXtoC(Border[4]);
+            Pen p = new Pen(PenColor, 1);
+            if (Border[0] == "1")
+            {
+                g.DrawLine(p, plt, plb);
+            }
+            if (Border[1] == "1")
+            {
+                g.DrawLine(p, plt, prt);
+            }
+            if (Border[2] == "1")
+            {
+                g.DrawLine(p, prt, prb);
+            }
+            if (Border[3] == "1")
+            {
+                g.DrawLine(p, plb, prb);
+            }
+            return bt;
+            
+        }
+
+        public Bitmap ImageBorder(PictureBox pb)
+        {
+            Bitmap bt = new Bitmap(pb.Image);
+            Point plt = new Point(0, 0);
+            Point prt = new Point(pb.Width - 1, 0);
+            Point plb = new Point(0, pb.Height - 1);
+            Point prb = new Point(pb.Width - 1, pb.Height - 1);
+            Graphics g = Graphics.FromImage(bt);
+            String[] Border = pb.Tag.ToString().Split('#');
+            Color PenColor = EditLED.HEXtoC(Border[4]);
+            Pen p = new Pen(PenColor, 1);
+            if (Border[0] == "1")
+            {
+                g.DrawLine(p, plt, plb);
+            }
+            if (Border[1] == "1")
+            {
+                g.DrawLine(p, plt, prt);
+            }
+            if (Border[2] == "1")
+            {
+                g.DrawLine(p, prt, prb);
+            }
+            if (Border[3] == "1")
+            {
+                g.DrawLine(p, plb, prb);
+            }
+            return bt;
+        }
+
+        public Bitmap BlackBorderF(PictureBox pb)
+        {
+            Bitmap bt = new Bitmap(pb.Width, pb.Height);
+            Point plt = new Point(0, 0);
+            Point prt = new Point(pb.Width - 1, 0);
+            Point plb = new Point(0, pb.Height - 1);
+            Point prb = new Point(pb.Width - 1, pb.Height - 1);
+            Graphics g = Graphics.FromImage(bt);
+            g.FillRectangle(Brushes.Black, 0, 0, bt.Width, bt.Height);
+            String[] Border = pb.Tag.ToString().Split('#');
+            Color PenColor = EditLED.HEXtoC(Border[4]);
+            Pen p = new Pen(PenColor, 1);
+            if (Border[0] == "1")
+            {
+                g.DrawLine(p, plt, plb);
+            }
+            if (Border[1] == "1")
+            {
+                g.DrawLine(p, plt, prt);
+            }
+            if (Border[2] == "1")
+            {
+                g.DrawLine(p, prt, prb);
+            }
+            if (Border[3] == "1")
+            {
+                g.DrawLine(p, plb, prb);
             }
 
-            PbText.Tag = "TE" + TextNo.ToString() + "#" + textC;
-            PbText.BackColor = Color.Transparent;
-            PbText.Parent = Parent;
-            StringBuilder sb = new StringBuilder(Content);
-            double width = sb.Length * TextSize;
-            double height = TextSize;
-            PbText.Width = (int)width;
-            PbText.Height = (int)height;
-            Bitmap btText = new Bitmap((int)width, (int)height);
-            PbText.Image = btText;
-            Graphics gText = Graphics.FromImage(btText);
-            double fontSize = TextSize * 0.75;
-            Font font = new Font("宋体", (float)fontSize);
-            SolidBrush sbrush = new SolidBrush(ColorText);
-            gText.DrawString(PbText.Name, font, sbrush, 0, 0);
-            PbText.Top = Top;
-            PbText.Left = Left;
-            PbText.SizeMode = PictureBoxSizeMode.StretchImage;
+            Color frameColor = Color.Gray;
+            Pen pf = new Pen(frameColor, 1);
+            pf.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+            Rectangle rect = new Rectangle(0, 0, pb.Width - 1, pb.Height - 1);
+            g.DrawRectangle(pf, rect);
+            return bt;
+         }
 
-        }
-
-        public void reText(PictureBox PbText, String Text, Color ColorText, float LeftMeter, float TopMeter, int TextSize)
+        public Bitmap ImageBorderF(PictureBox pb)
         {
-            string textC = "R";
-            switch (ColorText.Name)
+            Bitmap bt = new Bitmap(pb.Image);
+            Point plt = new Point(0, 0);
+            Point prt = new Point(pb.Width - 1, 0);
+            Point plb = new Point(0, pb.Height - 1);
+            Point prb = new Point(pb.Width - 1, pb.Height - 1);
+            Graphics g = Graphics.FromImage(bt);
+            String[] Border = pb.Tag.ToString().Split('#');
+            Color PenColor = EditLED.HEXtoC(Border[4]);
+            Pen p = new Pen(PenColor, 1);
+            if (Border[0] == "1")
             {
-                case "Red":
-                    textC = "R";
-                    break;
-                case "Green":
-                    textC = "G";
-                    break;
-                case "Yellow":
-                    textC = "Y";
-                    break;
+                g.DrawLine(p, plt, plb);
             }
-
-            StringBuilder sbTag = new StringBuilder(PbText.Tag.ToString());
-            sbTag.Remove(sbTag.Length - 1, 1);
-            sbTag.Append(textC);
-            PbText.Tag = sbTag.ToString();
-
-            StringBuilder sb = new StringBuilder(Text);
-            double width = sb.Length * 0.8 * TextSize;
-            double height = 0.8 * TextSize;
-            Bitmap btText = new Bitmap((int)width, (int)height);
-            Graphics g = Graphics.FromImage(btText);
-            g.Clear(Color.Transparent);
-            SolidBrush sbrush = new SolidBrush(ColorText);
-            double fontSize = TextSize * 0.533;
-            Font fontText = new Font("宋体", (float)fontSize);
-            g.DrawString(Text, fontText, sbrush, 0, 0);
-            PbText.Image = btText;
-            PbText.Name = Text;
-            PbText.Left = (int)(LeftMeter);
-            PbText.Top = (int)(TopMeter);
-            PbText.Width = (int)width;
-            PbText.Height = (int)height;
-
-        }
-
-        public void DrawLine(PictureBox PbMap, Color ColorLine, int SX, int SY, int EX, int EY)
-        {
-            Graphics gMap = Graphics.FromImage(PbMap.Image);
-            Pen penLine = new Pen(ColorLine, 1);
-            gMap.DrawLine(penLine, SX, SY, EX, EY);
+            if (Border[1] == "1")
+            {
+                g.DrawLine(p, plt, prt);
+            }
+            if (Border[2] == "1")
+            {
+                g.DrawLine(p, prt, prb);
+            }
+            if (Border[3] == "1")
+            {
+                g.DrawLine(p, plb, prb);
+            }
+            Color frameColor = Color.Gray;
+            Pen pf = new Pen(frameColor, 1);
+            pf.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+            Rectangle rect = new Rectangle(0, 0, pb.Width - 1, pb.Height - 1);
+            g.DrawRectangle(pf, rect);
+            return bt;
         }
     }
 }
